@@ -1,0 +1,24 @@
+[
+  {
+    "id": "ORD-1780471415471-447",
+    "customer": {
+      "email": "test@example.com",
+      "name": "Test User",
+      "phone": "1234567890",
+      "address": "123 Test St"
+    },
+    "items": [
+      {
+        "price": 300,
+        "quantity": 2,
+        "name": "Keshamrit Hair Oil",
+        "id": "keshamrit-hair-oil"
+      }
+    ],
+    "totalAmount": 600,
+    "paymentMethod": "UPI",
+    "status": "Pending",
+    "createdAt": "2026-06-03T07:23:35.471Z",
+    "trackingNumber": "SPARK-880857"
+  }
+]

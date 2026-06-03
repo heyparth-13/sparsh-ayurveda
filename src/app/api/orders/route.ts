@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrders, saveOrder, Order } from "@/lib/db";
+import { sendOrderConfirmationEmail } from "@/lib/email";
 
 export async function GET() {
   try {
@@ -38,7 +39,11 @@ export async function POST(req: NextRequest) {
     };
 
     const saved = await saveOrder(newOrder);
-    return NextResponse.json(saved, { status: 201 });
+    
+    // Send confirmation email
+    const emailPreviewUrl = await sendOrderConfirmationEmail(newOrder);
+    
+    return NextResponse.json({ ...saved, emailPreviewUrl }, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);
     return NextResponse.json({ error: "Failed to place order" }, { status: 500 });

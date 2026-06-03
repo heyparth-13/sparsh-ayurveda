@@ -309,8 +309,77 @@
 }
 
 .safeNotice {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
   text-align: center;
-  line-height: 1.4;
+  margin-top: 16px;
+  line-height: 1.5;
+}
+
+/* Modal / Transaction Styles */
+.processingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.processingModal {
+  background: var(--bg-white);
+  padding: 48px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-light);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.processingModal h2 {
+  font-family: var(--font-serif);
+  color: var(--primary-dark);
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.processingModal p {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--primary-soft);
+  border-top-color: var(--primary-dark);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.successCheck {
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-light);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 24px;
 }

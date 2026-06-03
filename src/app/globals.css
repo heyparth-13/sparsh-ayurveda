@@ -210,3 +210,50 @@ button, input, select, textarea {
   border-color: var(--primary-light);
   box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
 }
+
+/* Premium Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, #153628 100%);
+  color: var(--bg-cream);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(27, 67, 50, 0.2);
+  background: linear-gradient(135deg, #153628 0%, var(--primary-dark) 100%);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.btn-secondary:hover {
+  background: rgba(27, 67, 50, 0.05);
+}

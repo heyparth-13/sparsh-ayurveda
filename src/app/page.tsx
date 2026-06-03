@@ -39,10 +39,10 @@ export default function Home() {
               Welcome to <strong>Sparsh Veda</strong>. We handcraft authentic Ayurvedic remedies, oils, and cleansers using pure botanicals, cold-pressed oils, and age-old traditional recipes. 100% Chemical-free care.
             </p>
             <div className={styles.heroActions}>
-              <Link href="/shop" className={styles.primaryBtn}>
+              <Link href="/shop" className="btn-primary">
                 Explore Shop 🌿
               </Link>
-              <a href="#quiz-section" className={styles.secondaryBtn}>
+              <a href="#quiz-section" className="btn-secondary">
                 Find Your Dosha 🔍
               </a>
             </div>

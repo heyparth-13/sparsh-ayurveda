@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
+import { motion, AnimatePresence } from "framer-motion";
 import styles from "./page.module.css";
 
 export default function CheckoutPage() {
@@ -28,14 +28,15 @@ export default function CheckoutPage() {
   const [cardCvv, setCardCvv] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [transactionStatus, setTransactionStatus] = useState<"idle" | "processing" | "success">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   // Prevent accessing checkout with an empty cart
   useEffect(() => {
-    if (cartItems.length === 0 && !isSubmitting) {
+    if (cartItems.length === 0 && transactionStatus === "idle") {
       router.push("/cart");
     }
-  }, [cartItems, router, isSubmitting]);
+  }, [cartItems, router, transactionStatus]);
 
   const shippingFee = cartTotal >= 500 || cartTotal === 0 ? 0 : 50;
   const grandTotal = cartTotal + shippingFee;
@@ -43,9 +44,13 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setTransactionStatus("processing");
     setErrorMsg("");
 
     try {
+      // Simulate Razorpay/Bank processing delay for premium feel
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      
       const orderPayload = {
         customer: {
           name,
@@ -79,25 +84,71 @@ export default function CheckoutPage() {
       }
 
       const placedOrder = await res.json();
-      clearCart();
-      router.push(`/order-success/${placedOrder.id}`);
+      setTransactionStatus("success");
+      
+      // Wait a moment for success animation before redirect
+      setTimeout(() => {
+        clearCart();
+        router.push(`/order-success/${placedOrder.id}`);
+      }, 1500);
+
     } catch (err: unknown) {
       if (err instanceof Error) {
         setErrorMsg(err.message);
       } else {
-        setErrorMsg("Failed to place order.");
+        setErrorMsg("Failed to process payment.");
       }
       setIsSubmitting(false);
+      setTransactionStatus("idle");
     }
   };
 
-  if (cartItems.length === 0) {
+  if (cartItems.length === 0 && transactionStatus === "idle") {
     return null; // Avoid render flashes
   }
 
   return (
     <>
       <Header />
+      
+      <AnimatePresence>
+        {transactionStatus !== "idle" && (
+          <motion.div 
+            className={styles.processingOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className={styles.processingModal}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", bounce: 0.4 }}
+            >
+              {transactionStatus === "processing" ? (
+                <>
+                  <div className={styles.spinner} />
+                  <h2>Processing Payment...</h2>
+                  <p>Please do not close this window securely establishing connection.</p>
+                </>
+              ) : (
+                <>
+                  <motion.div 
+                    className={styles.successCheck}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", bounce: 0.6, delay: 0.2 }}
+                  >
+                    ✓
+                  </motion.div>
+                  <h2>Payment Accepted!</h2>
+                  <p>Redirecting to your order confirmation...</p>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className={styles.main}>
         <div className="container section-padding">

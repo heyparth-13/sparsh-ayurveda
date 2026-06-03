@@ -1,0 +1,96 @@
+.aboutPage {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.hero {
+  position: relative;
+  height: 50vh;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--primary-dark);
+  color: var(--bg-cream);
+  text-align: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(27,67,50,0.6) 0%, rgba(10,25,18,0.9) 100%);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 24px;
+}
+
+.title {
+  font-size: clamp(40px, 6vw, 64px);
+  color: var(--bg-cream);
+  margin-bottom: 24px;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: var(--accent-gold);
+  font-family: var(--font-serif);
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.storySection {
+  padding: 100px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.storyText {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-dark);
+  margin-bottom: 32px;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+  margin-top: 64px;
+}
+
+.valueCard {
+  background: var(--bg-white);
+  padding: 40px 32px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border-light);
+}
+
+.valueCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.valueIcon {
+  font-size: 40px;
+  margin-bottom: 24px;
+}
+
+.valueTitle {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.valueDesc {
+  font-size: 15px;
+  color: var(--text-muted);
+}

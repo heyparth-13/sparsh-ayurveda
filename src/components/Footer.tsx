@@ -33,9 +33,6 @@ export default function Footer() {
               <li>
                 <Link href="/cart" className={styles.link}>Shopping Cart</Link>
               </li>
-              <li>
-                <Link href="/admin" className={styles.link}>Admin Panel</Link>
-              </li>
             </ul>
           </div>
 
@@ -70,6 +67,9 @@ export default function Footer() {
           <p className={styles.copy}>
             &copy; {new Date().getFullYear()} Sparsh Veda (Sparsh Veda Care). All rights reserved.
           </p>
+          <Link href="/admin" className={styles.adminSecretBtn} aria-label="Admin Access">
+            &#128274;
+          </Link>
         </div>
       </div>
     </footer>

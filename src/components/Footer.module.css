@@ -145,3 +145,14 @@
   font-size: 13px;
   text-align: center;
 }
+
+.adminSecretBtn {
+  opacity: 0.1;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  text-decoration: none;
+}
+.adminSecretBtn:hover {
+  opacity: 0.5;
+}
