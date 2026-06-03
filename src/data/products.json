@@ -1,0 +1,216 @@
+[
+  {
+    "id": "keshamrit-hair-oil",
+    "name": "Keshamrit Hair Oil",
+    "price": 300,
+    "category": "oils",
+    "description": "An exquisite blend of 17 premium herbs and natural oils designed to revive your scalp and promote luxurious, strong, and shiny hair. Nurtured by nature, this oil is a complete food for your roots.",
+    "ingredients": [
+      "Sesame Oil",
+      "Coconut Oil",
+      "Castor Oil",
+      "Almond Oil",
+      "Amla",
+      "Bhringraj",
+      "Brahmi",
+      "Curry Leaves",
+      "Neem",
+      "Hibiscus Flower",
+      "Ashwagandha",
+      "Fenugreek Seeds",
+      "Jatamansi",
+      "Tulsi",
+      "Kalonji",
+      "Rosemary",
+      "Vitamin E"
+    ],
+    "benefits": [
+      "Promotes Hair Growth",
+      "Reduces Hair Fall",
+      "Strengthens Hair Roots",
+      "Deep Nourishment",
+      "Improves Hair Texture & Shine"
+    ],
+    "image": "/images/products/keshamrit-hair-oil.jpg",
+    "rating": 4.9,
+    "reviewsCount": 42
+  },
+  {
+    "id": "keshpallav-hair-cleanser",
+    "name": "Keshpallav Hair Cleanser",
+    "price": 200,
+    "category": "cleansers",
+    "description": "A natural, gentle cleanser formulated with age-old Ayurvedic elements like Shikakai and Reetha to clean your hair without stripping its natural oils. Combined with Rice Water and Vitamin E for ultimate nourishment.",
+    "ingredients": [
+      "Amla",
+      "Reetha",
+      "Shikakai",
+      "Rosemary Leaves",
+      "Hibiscus Flower",
+      "Fenugreek Seeds",
+      "Aloe Vera",
+      "Flax Seeds",
+      "Bhringraj",
+      "Jatamansi",
+      "Rice Water",
+      "Vitamin E"
+    ],
+    "benefits": [
+      "Gentle Hair Cleansing",
+      "Dandruff Control",
+      "Nourishes Scalp",
+      "Strengthens Hair",
+      "Suitable For All Hair Types"
+    ],
+    "image": "/images/products/keshpallav-hair-cleanser.jpg",
+    "rating": 4.8,
+    "reviewsCount": 38
+  },
+  {
+    "id": "ubtan-face-wash",
+    "name": "Ubtan Face Wash",
+    "price": 200,
+    "category": "face-wash",
+    "description": "Reveal your skin's natural radiance with this traditional blend of Ubtan, Turmeric, and Palash (Kesuda). It removes dirt, brightens complexion, and helps reduce tan for a refreshed, daily glow.",
+    "ingredients": [
+      "Ubtan",
+      "Turmeric",
+      "Palash (Kesuda)",
+      "Aloe Vera"
+    ],
+    "benefits": [
+      "Natural Glow",
+      "Removes Dirt & Excess Oil",
+      "Helps Reduce Tan",
+      "Brightens Skin Naturally",
+      "Suitable For Daily Use"
+    ],
+    "image": "/images/products/ubtan-face-wash.jpg",
+    "rating": 4.7,
+    "reviewsCount": 56
+  },
+  {
+    "id": "palash-kesuda-soap",
+    "name": "Palash (Kesuda) Soap",
+    "price": 75,
+    "category": "soaps",
+    "description": "Handcrafted soap bars enriched with the natural properties of Palash (Kesuda) flower extracts, perfect for soothing skin and promoting a healthy complexion.",
+    "ingredients": [
+      "Palash (Kesuda) Flower Extract",
+      "Ayurvedic Soap Base",
+      "Natural Essential Oils",
+      "Coconut Oil"
+    ],
+    "benefits": [
+      "Handmade",
+      "Ayurvedic Formula",
+      "SLS Free",
+      "Paraben Free",
+      "Cruelty Free",
+      "Suitable For All Skin Types"
+    ],
+    "image": "/images/products/palash-soap.jpg",
+    "rating": 4.8,
+    "reviewsCount": 29
+  },
+  {
+    "id": "neem-soap",
+    "name": "Neem Soap",
+    "price": 75,
+    "category": "soaps",
+    "description": "A powerful purifying handcrafted soap bar that leverages Neem's antibacterial properties to cleanse, soothe, and protect your skin against impurities.",
+    "ingredients": [
+      "Neem Oil",
+      "Neem Leaf Extract",
+      "Ayurvedic Soap Base",
+      "Natural Essential Oils",
+      "Tulsi Extract"
+    ],
+    "benefits": [
+      "Handmade",
+      "Ayurvedic Formula",
+      "SLS Free",
+      "Paraben Free",
+      "Cruelty Free",
+      "Suitable For All Skin Types"
+    ],
+    "image": "/images/products/neem-soap.jpg",
+    "rating": 4.9,
+    "reviewsCount": 34
+  },
+  {
+    "id": "goat-milk-soap",
+    "name": "Goat Milk Soap",
+    "price": 100,
+    "category": "soaps",
+    "description": "An exceptionally creamy, moisturizing soap bar made with pure Goat Milk. High in natural fats and proteins to keep dry skin thoroughly hydrated, soft, and supple.",
+    "ingredients": [
+      "Goat Milk",
+      "Shea Butter",
+      "Almond Oil",
+      "Ayurvedic Soap Base",
+      "Honey Extract"
+    ],
+    "benefits": [
+      "Handmade",
+      "Ayurvedic Formula",
+      "SLS Free",
+      "Paraben Free",
+      "Cruelty Free",
+      "Suitable For All Skin Types"
+    ],
+    "image": "/images/products/goat-milk-soap.jpg",
+    "rating": 4.8,
+    "reviewsCount": 23
+  },
+  {
+    "id": "charcoal-soap",
+    "name": "Charcoal Soap",
+    "price": 100,
+    "category": "soaps",
+    "description": "A deep cleansing soap bar infused with Activated Bamboo Charcoal to draw out toxins, dirt, and excess oil from pores, leaving skin clean, clear, and revitalized.",
+    "ingredients": [
+      "Activated Bamboo Charcoal",
+      "Tea Tree Essential Oil",
+      "Ayurvedic Soap Base",
+      "Coconut Oil",
+      "Aloe Vera Extract"
+    ],
+    "benefits": [
+      "Handmade",
+      "Ayurvedic Formula",
+      "SLS Free",
+      "Paraben Free",
+      "Cruelty Free",
+      "Suitable For All Skin Types"
+    ],
+    "image": "/images/products/charcoal-soap.jpg",
+    "rating": 4.7,
+    "reviewsCount": 45
+  },
+  {
+    "id": "shea-butter-soap",
+    "name": "Shea Butter Soap",
+    "price": 125,
+    "category": "soaps",
+    "description": "Indulge your skin with this luxurious, ultra-rich soap bar crafted with natural Shea Butter to provide deep nourishment, lock in moisture, and restore skin elasticity.",
+    "ingredients": [
+      "Shea Butter",
+      "Cocoa Butter",
+      "Olive Oil",
+      "Ayurvedic Soap Base",
+      "Vitamin E"
+    ],
+    "benefits": [
+      "Handmade",
+      "Ayurvedic Formula",
+      "SLS Free",
+      "Paraben Free",
+      "Cruelty Free",
+      "Suitable For All Skin Types"
+    ],
+    "image": "/images/products/shea-butter-soap.jpg",
+    "rating": 4.9,
+    "reviewsCount": 31
+  }
+]

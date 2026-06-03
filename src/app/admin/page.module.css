@@ -1,0 +1,574 @@
+.main {
+  background-color: var(--bg-cream);
+  min-height: 100vh;
+  font-family: var(--font-sans);
+}
+
+/* Passcode Login Gate */
+.loginCard {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  max-width: 500px;
+  margin: 60px auto;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.loginTitle {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--primary-dark);
+}
+
+.loginSubtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.authError {
+  background-color: #ffe3e3;
+  color: #c92a2a;
+  border: 1px solid #ffc9c9;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.loginBtn {
+  background-color: var(--primary-dark);
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.loginBtn:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Dashboard Layout */
+.adminHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 600px) {
+  .adminHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  color: var(--primary-dark);
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.logoutBtn {
+  background-color: transparent;
+  color: var(--text-dark);
+  border: 1px solid var(--border-light);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logoutBtn:hover {
+  background-color: var(--bg-white);
+  border-color: var(--text-dark);
+}
+
+/* Analytics */
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.analyticsCard {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.analyticsLabel {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.analyticsVal {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.analyticsSub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Table Card */
+.tableCard {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+  .tableCard {
+    padding: 20px 16px;
+  }
+}
+
+.tableTitle {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--primary-dark);
+  margin-bottom: 24px;
+}
+
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 992px) {
+  .controlsRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+}
+
+.searchWrapper {
+  position: relative;
+  flex-grow: 1;
+  max-width: 480px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border-radius: 50px;
+  border: 1px solid var(--border-light);
+  font-size: 13px;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--primary-light);
+}
+
+.filterTabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.filterBtn {
+  background-color: var(--bg-cream);
+  border: 1px solid var(--border-light);
+  color: var(--text-dark);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filterBtn:hover {
+  background-color: #f3f0ea;
+}
+
+.activeFilter {
+  background-color: var(--primary-dark);
+  color: white;
+  border-color: var(--primary-dark);
+}
+
+/* Orders Table */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+
+.table th, .table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.table th {
+  font-weight: 700;
+  color: var(--primary-dark);
+  background-color: var(--bg-cream);
+}
+
+.tableRow {
+  transition: background-color 0.2s;
+}
+
+.tableRow:hover {
+  background-color: rgba(27, 67, 50, 0.02);
+}
+
+.orderId {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.dateCell {
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.custName {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.custContact {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.amountCell {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.payCell {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Status select dropdown styling */
+.statusSelect {
+  padding: 6px 12px;
+  border-radius: 50px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}
+
+.statusPending {
+  background-color: #fef3c7;
+  color: #d97706;
+  border-color: #fde68a;
+}
+
+.statusShipped {
+  background-color: #dbeafe;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+
+.statusDelivered {
+  background-color: #d1fae5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.viewBtn {
+  background-color: transparent;
+  border: 1px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewBtn:hover {
+  background-color: var(--primary-dark);
+  color: white;
+  border-color: var(--primary-dark);
+}
+
+.loadingText {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px 0;
+}
+
+.emptyTable {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--text-muted);
+}
+
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(27, 67, 50, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modalContent {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 650px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modalHeader h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  color: var(--text-dark);
+}
+
+.modalBody {
+  padding: 30px;
+}
+
+.receiptTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.receiptTitleRow h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--primary-dark);
+}
+
+.receiptTagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--accent-gold-dark);
+}
+
+.receiptDivider {
+  border-top: 1px dashed var(--border-light);
+  margin: 16px 0;
+}
+
+.receiptGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.receiptGrid h4 {
+  font-size: 13px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  color: var(--primary-dark);
+  letter-spacing: 0.05em;
+}
+
+/* Invoice list inside Receipt Modal */
+.invoiceTable {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.invoiceRow {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 1fr 1fr;
+  color: #4a4e69;
+}
+
+.tableHeader {
+  font-weight: 700;
+  color: var(--primary-dark);
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 6px;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.textRight {
+  text-align: right;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  padding: 2px 0;
+}
+
+.receiptGrand {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-top: 8px;
+}
+
+.modalFooter {
+  padding: 20px 30px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.printBtn {
+  background-color: var(--primary-dark);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.printBtn:hover {
+  background-color: var(--primary-light);
+}
+
+.dismissBtn {
+  background-color: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-dark);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dismissBtn:hover {
+  background-color: var(--bg-cream);
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}

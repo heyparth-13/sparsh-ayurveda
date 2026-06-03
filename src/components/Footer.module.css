@@ -1,0 +1,147 @@
+.footer {
+  background-color: var(--primary-dark);
+  color: var(--text-light);
+  padding: 80px 0 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-sans);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr 1.5fr;
+  gap: 48px;
+  margin-bottom: 60px;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--bg-cream);
+}
+
+.logoLeaf {
+  font-size: 24px;
+}
+
+.tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.description {
+  color: rgba(244, 245, 246, 0.7);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.colTitle {
+  font-family: var(--font-serif);
+  color: var(--bg-cream);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.colTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background-color: var(--accent-gold);
+}
+
+.linkList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link {
+  color: rgba(244, 245, 246, 0.7);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.link:hover {
+  color: var(--accent-gold);
+  transform: translateX(4px);
+  display: inline-block;
+}
+
+.valueList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: rgba(244, 245, 246, 0.85);
+  font-size: 14px;
+}
+
+.contactCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contactItem {
+  color: rgba(244, 245, 246, 0.7);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.contactItem strong {
+  color: var(--bg-cream);
+  font-weight: 500;
+}
+
+.bottomBar {
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.copy {
+  color: rgba(244, 245, 246, 0.5);
+  font-size: 13px;
+  text-align: center;
+}

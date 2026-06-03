@@ -1,0 +1,229 @@
+.quizCard {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-sans);
+}
+
+@media (max-width: 768px) {
+  .quizCard {
+    padding: 30px 20px;
+  }
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  margin-bottom: 40px;
+}
+
+.quizContent {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--primary-soft);
+  border-radius: 3px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--primary-dark);
+  transition: width 0.3s ease-in-out;
+}
+
+.stepIndicator {
+  font-size: 12px;
+  color: var(--primary-dark);
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.questionText {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 30px;
+}
+
+.optionsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.optionBtn {
+  background: var(--bg-cream);
+  border: 1px solid var(--border-light);
+  padding: 18px 24px;
+  text-align: left;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 550;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.optionBtn:hover {
+  background-color: var(--primary-dark);
+  color: white;
+  border-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.resultContainer {
+  animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.resultBadge {
+  background: #fdf0d5;
+  color: #780000;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.resultBody {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 32px;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .resultBody {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+}
+
+.resultImageWrapper {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: #f7f6f2;
+  border: 1px solid var(--border-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  position: relative;
+}
+
+.resultImage {
+  object-fit: cover;
+}
+
+.resultInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resultName {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.resultDesc {
+  font-size: 15px;
+  color: #4a4e69;
+  line-height: 1.6;
+}
+
+.resultActionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .resultActionRow {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+}
+
+.resultPrice {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.resultBtns {
+  display: flex;
+  gap: 12px;
+}
+
+.shopBtn {
+  background-color: var(--primary-dark);
+  color: white;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+  display: inline-block;
+}
+
+.shopBtn:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.resetBtn {
+  background-color: transparent;
+  color: var(--text-dark);
+  border: 1px solid var(--border-light);
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resetBtn:hover {
+  background-color: var(--bg-cream);
+  border-color: var(--text-dark);
+}
+
+@keyframes scaleUp {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
