@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Outfit } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${outfit.variable}`}>
       <body>
-        <CartProvider>{children}</CartProvider>
+        <AuthProvider>
+          <CartProvider>{children}</CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

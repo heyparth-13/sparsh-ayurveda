@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌿 Sparsh Veda Care
 
-## Getting Started
+Welcome to the **Sparsh Veda Care** platform! This is a modern, full-stack e-commerce web application designed for an Ayurvedic products store. It provides a seamless shopping experience for customers and a secure management dashboard for store administrators.
 
-First, run the development server:
+## 🚀 How It Works (Features)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Product Browsing & Cart**: Users can browse Ayurvedic products, read detailed descriptions, and add them to their shopping cart.
+2. **User Authentication**: A custom, secure sign-up and login system allows users to create individual accounts with different email IDs and securely hashed passwords.
+3. **Secure Checkout**:
+   - Multiple payment gateways including **Credit/Debit Cards** and **UPI** seamlessly integrated via **Razorpay**.
+   - **Cash on Delivery (COD)** option, enforcing a customized ₹30 surcharge.
+4. **Automated Emails**: The system automatically dispatches an itemized, HTML-styled email bill and receipt to the customer upon successful order placement.
+5. **Admin Command Dashboard**: 
+   - A hidden gateway located in the site footer grants access to the admin panel.
+   - Protected by a secure passcode (`7259`).
+   - Admins can manage product listings (edit names, update prices) in real-time, view order books, track revenue, and update shipment statuses dynamically.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ How It's Made (Tech Stack)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This platform leverages modern web technologies for a premium feel and scalability:
+- **Frontend**: Built with **Next.js 16 (App Router)** and **React 19**, styled utilizing custom CSS modules and beautifully animated using **Framer Motion**. 
+- **Backend APIs**: Employs Next.js Serverless Route Handlers for robust API endpoints (`/api/auth`, `/api/orders`, `/api/products`, `/api/razorpay`).
+- **Database**: A lightweight filesystem-based JSON architecture (`products.json`, `orders.json`, and `users.json`) allowing for rapid data operations.
+- **Authentication**: Custom JWT and cookie session management leveraging Node.js native `crypto` (`scryptSync`) module for secure password hashing and verification.
+- **Payment Processing**: Connected to the **Razorpay Node SDK** to handle checkout sessions, handle UPI, and calculate cart totals.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 💻 Getting Started
 
-## Learn More
+To run this project locally on your machine, follow these steps:
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
+Make sure you have Node.js (v18+) and npm installed.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Navigate to the project directory:
+   ```bash
+   cd sparsh
+   ```
+2. Install the required dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to view the website.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Enjoy exploring Sparsh Veda Care! 🌿

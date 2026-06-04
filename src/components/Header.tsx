@@ -41,7 +41,8 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        <div className={styles.actions}>
+        <div className={styles.actions} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <AuthButtons />
           <Link href="/cart" className={styles.cartBtn} aria-label="Shopping Cart">
             <span className={styles.cartIcon}>🛒</span>
             <CartCountBadge />
@@ -50,6 +51,23 @@ export default function Header() {
       </div>
     </header>
   );
+}
+
+// Client Component badge to read the cart state reactively
+import { useAuth } from "@/context/AuthContext";
+
+function AuthButtons() {
+  const { user, logout, isLoading } = useAuth();
+  if (isLoading) return null;
+  if (user) {
+    return (
+      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+        <span style={{ fontSize: "0.9rem", color: "var(--primary-dark)" }}>Hi, {user.name}</span>
+        <button onClick={logout} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-light)", textDecoration: "underline", fontSize: "0.9rem" }}>Logout</button>
+      </div>
+    );
+  }
+  return <Link href="/login" style={{ fontSize: "0.9rem", color: "var(--primary-color)", fontWeight: 600 }}>Login</Link>;
 }
 
 // Client Component badge to read the cart state reactively

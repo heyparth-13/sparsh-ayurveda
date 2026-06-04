@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
+import Script from "next/script";
 import styles from "./page.module.css";
 
 export default function CheckoutPage() {
@@ -39,7 +40,30 @@ export default function CheckoutPage() {
   }, [cartItems, router, transactionStatus]);
 
   const shippingFee = cartTotal >= 500 || cartTotal === 0 ? 0 : 50;
-  const grandTotal = cartTotal + shippingFee;
+  const codSurcharge = paymentMethod === "cod" ? 30 : 0;
+  const grandTotal = cartTotal + shippingFee + codSurcharge;
+
+  const placeOrder = async (orderPayload: any) => {
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderPayload),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to place the order. Please try again.");
+    }
+
+    const placedOrder = await res.json();
+    setTransactionStatus("success");
+    
+    setTimeout(() => {
+      clearCart();
+      router.push(`/order-success/${placedOrder.id}`);
+    }, 1500);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,26 +95,61 @@ export default function CheckoutPage() {
         paymentMethod,
       };
 
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderPayload),
-      });
+      if (paymentMethod === "card" || paymentMethod === "upi") {
+        const rzpRes = await fetch("/api/razorpay", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: grandTotal })
+        });
+        const orderData = await rzpRes.json();
 
-      if (!res.ok) {
-        throw new Error("Failed to place the order. Please try again.");
+        if (orderData.error) throw new Error(orderData.error);
+
+        const options: any = {
+          key: "rzp_test_placeholder", // Replace with env variable in production
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: "Sparsh Veda",
+          description: "Ayurvedic Products Checkout",
+          order_id: orderData.id,
+          handler: async function (response: any) {
+            setTransactionStatus("processing");
+            try {
+              await placeOrder({ ...orderPayload, razorpayResponse: response });
+            } catch (err: any) {
+              setErrorMsg(err.message);
+              setTransactionStatus("idle");
+            }
+          },
+          prefill: { name, email, contact: phone },
+          theme: { color: "#2E4F39" }
+        };
+
+        if (paymentMethod === "upi") {
+          options.config = {
+            display: {
+              blocks: {
+                upi: {
+                  name: "Pay using UPI",
+                  instruments: [{ method: "upi" }]
+                }
+              },
+              sequence: ["block.upi"],
+              preferences: { show_default_blocks: false }
+            }
+          };
+        }
+
+        const rzp1 = new (window as any).Razorpay(options);
+        rzp1.on("payment.failed", function (response: any) {
+          setErrorMsg(response.error.description);
+        });
+        rzp1.open();
+        setTransactionStatus("idle");
+        setIsSubmitting(false);
+      } else {
+        await placeOrder(orderPayload);
       }
-
-      const placedOrder = await res.json();
-      setTransactionStatus("success");
-      
-      // Wait a moment for success animation before redirect
-      setTimeout(() => {
-        clearCart();
-        router.push(`/order-success/${placedOrder.id}`);
-      }, 1500);
 
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -109,6 +168,7 @@ export default function CheckoutPage() {
 
   return (
     <>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <Header />
       
       <AnimatePresence>
@@ -284,7 +344,26 @@ export default function CheckoutPage() {
                     />
                     <div className={styles.optionDetails}>
                       <strong>Credit / Debit Card</strong>
-                      <span>Simulate online payment securely.</span>
+                      <span>Pay securely using Razorpay.</span>
+                    </div>
+                  </label>
+
+                  <label
+                    className={`${styles.paymentOption} ${
+                      paymentMethod === "upi" ? styles.selectedOption : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="upi"
+                      checked={paymentMethod === "upi"}
+                      onChange={() => setPaymentMethod("upi")}
+                      className={styles.radioInput}
+                    />
+                    <div className={styles.optionDetails}>
+                      <strong>UPI (GPay, PhonePe, Paytm)</strong>
+                      <span>Fast and secure UPI payments via Razorpay.</span>
                     </div>
                   </label>
                 </div>
@@ -374,6 +453,12 @@ export default function CheckoutPage() {
                     <span>Shipping Charges</span>
                     <span>{shippingFee === 0 ? "FREE" : `₹${shippingFee}`}</span>
                   </div>
+                  {paymentMethod === "cod" && (
+                    <div className={styles.summaryRow}>
+                      <span>COD Surcharge</span>
+                      <span>₹{codSurcharge}</span>
+                    </div>
+                  )}
                   <div className={styles.totalDivider} />
                   <div className={`${styles.summaryRow} ${styles.grandTotalRow}`}>
                     <span>Grand Total</span>

@@ -103,12 +103,33 @@ export async function updateOrderStatus(orderId: string, status: "Pending" | "Sh
 
 // Product Database Operations
 export async function getProducts(): Promise<Product[]> {
-  return productsData as Product[];
+  const filePath = getFilePath("products.json");
+  ensureFileExists(filePath);
+  try {
+    const data = await fs.promises.readFile(filePath, "utf-8");
+    return JSON.parse(data) as Product[];
+  } catch (error) {
+    console.error("Error reading products:", error);
+    // Fallback to static data if file doesn't exist or is empty/corrupt
+    return productsData as Product[];
+  }
 }
 
 export async function getProductById(id: string): Promise<Product | undefined> {
   const products = await getProducts();
   return products.find((p) => p.id === id);
+}
+
+export async function updateProduct(id: string, updates: Partial<Product>): Promise<Product | null> {
+  const filePath = getFilePath("products.json");
+  ensureFileExists(filePath);
+  const products = await getProducts();
+  const index = products.findIndex((p) => p.id === id);
+  if (index === -1) return null;
+  
+  products[index] = { ...products[index], ...updates };
+  await fs.promises.writeFile(filePath, JSON.stringify(products, null, 2), "utf-8");
+  return products[index];
 }
 
 // Reviews Database Operations

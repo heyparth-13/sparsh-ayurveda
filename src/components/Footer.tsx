@@ -67,7 +67,7 @@ export default function Footer() {
           <p className={styles.copy}>
             &copy; {new Date().getFullYear()} Sparsh Veda (Sparsh Veda Care). All rights reserved.
           </p>
-          <Link href="/admin" className={styles.adminSecretBtn} aria-label="Admin Access">
+          <Link href="/admin" prefetch={false} className={styles.adminSecretBtn} aria-label="Admin Access">
             &#128274;
           </Link>
         </div>
