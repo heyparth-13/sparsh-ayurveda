@@ -42,7 +42,6 @@ export default function Header() {
           ))}
         </nav>
         <div className={styles.actions} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <AuthButtons />
           <Link href="/cart" className={styles.cartBtn} aria-label="Shopping Cart">
             <span className={styles.cartIcon}>🛒</span>
             <CartCountBadge />
