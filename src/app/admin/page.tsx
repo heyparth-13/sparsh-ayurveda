@@ -66,12 +66,12 @@ export default function AdminPage() {
     fetchProducts();
   }, [isAuthenticated]);
 
-  const handleProductUpdate = async (id: string, name: string, price: number) => {
+  const handleProductUpdate = async (id: string, updates: Partial<Product>) => {
     try {
       const res = await fetch(`/api/products/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, price }),
+        body: JSON.stringify(updates),
       });
       if (res.ok) {
         const updated = await res.json();
@@ -345,9 +345,9 @@ export default function AdminPage() {
                     <thead>
                       <tr>
                         <th>ID</th>
-                        <th>Product Name</th>
+                        <th>Details (Name / Category)</th>
                         <th>Price (₹)</th>
-                        <th>Category</th>
+                        <th>Media & Info (Img URL / Desc)</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -360,6 +360,14 @@ export default function AdminPage() {
                               type="text" 
                               defaultValue={product.name} 
                               id={`name-${product.id}`}
+                              placeholder="Name"
+                              style={{ padding: "4px", border: "1px solid #ccc", borderRadius: "4px", width: "100%", marginBottom: "4px" }}
+                            />
+                            <input 
+                              type="text" 
+                              defaultValue={product.category} 
+                              id={`cat-${product.id}`}
+                              placeholder="Category"
                               style={{ padding: "4px", border: "1px solid #ccc", borderRadius: "4px", width: "100%" }}
                             />
                           </td>
@@ -371,13 +379,30 @@ export default function AdminPage() {
                               style={{ padding: "4px", border: "1px solid #ccc", borderRadius: "4px", width: "80px" }}
                             />
                           </td>
-                          <td>{product.category}</td>
+                          <td>
+                            <input 
+                              type="text" 
+                              defaultValue={product.image} 
+                              id={`img-${product.id}`}
+                              placeholder="Image URL"
+                              style={{ padding: "4px", border: "1px solid #ccc", borderRadius: "4px", width: "100%", marginBottom: "4px" }}
+                            />
+                            <textarea 
+                              defaultValue={product.description} 
+                              id={`desc-${product.id}`}
+                              placeholder="Description"
+                              style={{ padding: "4px", border: "1px solid #ccc", borderRadius: "4px", width: "100%", minHeight: "40px" }}
+                            />
+                          </td>
                           <td>
                             <button
                               onClick={() => {
                                 const newName = (document.getElementById(`name-${product.id}`) as HTMLInputElement).value;
                                 const newPrice = parseFloat((document.getElementById(`price-${product.id}`) as HTMLInputElement).value);
-                                handleProductUpdate(product.id, newName, newPrice);
+                                const newCat = (document.getElementById(`cat-${product.id}`) as HTMLInputElement).value;
+                                const newImg = (document.getElementById(`img-${product.id}`) as HTMLInputElement).value;
+                                const newDesc = (document.getElementById(`desc-${product.id}`) as HTMLTextAreaElement).value;
+                                handleProductUpdate(product.id, { name: newName, price: newPrice, category: newCat, image: newImg, description: newDesc });
                               }}
                               style={{ background: "var(--primary-dark)", color: "white", padding: "6px 12px", borderRadius: "4px", border: "none", cursor: "pointer" }}
                             >
