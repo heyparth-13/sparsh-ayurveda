@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function proxy(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const basicAuth = req.headers.get('authorization');
   const url = req.nextUrl;
 
@@ -11,9 +11,8 @@ export function proxy(req: NextRequest) {
       const authValue = basicAuth.split(' ')[1];
       const [user, pwd] = atob(authValue).split(':');
 
-      // Simple hardcoded credentials for demonstration
-      // User: admin, Password: sparshpassword
-      if (user === 'admin' && pwd === 'sparshpassword') {
+      // Admin password updated to 7259 as requested
+      if (user === 'admin' && pwd === '7259') {
         return NextResponse.next();
       }
     }
