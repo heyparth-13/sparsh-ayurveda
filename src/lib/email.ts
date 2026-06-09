@@ -5,19 +5,28 @@ let transporter: nodemailer.Transporter | null = null;
 
 async function getTransporter() {
   if (transporter) return transporter;
-  
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-  let testAccount = await nodemailer.createTestAccount();
 
-  // create reusable transporter object using the default SMTP transport
+  // Use real SMTP if configured (e.g., Gmail App Passwords, SendGrid, etc.)
+  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+    transporter = nodemailer.createTransport({
+      service: process.env.SMTP_SERVICE || "gmail", // default to gmail
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+    return transporter;
+  }
+  
+  // Generate test SMTP service account from ethereal.email if no real config exists
+  let testAccount = await nodemailer.createTestAccount();
   transporter = nodemailer.createTransport({
     host: "smtp.ethereal.email",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      user: testAccount.user,
+      pass: testAccount.pass,
     },
   });
   
@@ -33,7 +42,7 @@ export async function sendOrderConfirmationEmail(order: Order) {
     ).join("");
 
     const mailOptions = {
-      from: '"Sparsh Veda Care 🌿" <no-reply@sparksweda.com>',
+      from: process.env.SMTP_USER ? `"Sparsh Ayurveda" <${process.env.SMTP_USER}>` : '"Sparsh Ayurveda" <no-reply@sparksayurveda.com>',
       to: order.customer.email,
       subject: `Order Confirmation - ${order.id}`,
       text: `Hello ${order.customer.name}, your order ${order.id} has been received. Total: ₹${order.totalAmount}. Tracking: ${order.trackingNumber}`,

@@ -60,14 +60,6 @@ export async function POST(req: NextRequest) {
       // Email module failed to load — don't crash the order
     }
 
-    // Send WhatsApp in background
-    try {
-      const { sendOrderConfirmationWhatsApp } = await import("@/lib/whatsapp");
-      sendOrderConfirmationWhatsApp(newOrder).catch(() => {});
-    } catch {
-      // WhatsApp module failed to load
-    }
-
     return NextResponse.json(responseBody, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);
