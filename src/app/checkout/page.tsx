@@ -53,15 +53,34 @@ export default function CheckoutPage() {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to place the order. Please try again.");
+      let errorText = "Failed to place the order. Please try again.";
+      try {
+        const errData = await res.json();
+        if (errData?.error) errorText = errData.error;
+      } catch {
+        // Response wasn't JSON
+      }
+      throw new Error(errorText);
     }
 
-    const placedOrder = await res.json();
+    // Safely parse response JSON
+    let placedOrder: any = {};
+    try {
+      const text = await res.text();
+      if (text) {
+        placedOrder = JSON.parse(text);
+      }
+    } catch {
+      // If response body is empty/invalid, still proceed with order
+      console.warn("Could not parse order response, proceeding anyway");
+    }
+
     setTransactionStatus("success");
     
     setTimeout(() => {
       clearCart();
-      router.push(`/order-success/${placedOrder.id}`);
+      const orderId = placedOrder?.id || "success";
+      router.push(`/order-success/${orderId}`);
     }, 1500);
   };
 

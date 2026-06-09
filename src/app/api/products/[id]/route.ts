@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateProduct } from "@/lib/db";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params; // Next.js 15+ wait params

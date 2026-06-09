@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrders, saveOrder, Order } from "@/lib/db";
-import { sendOrderConfirmationEmail } from "@/lib/email";
+
+// Force Node.js runtime (required for fs operations)
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -38,14 +41,26 @@ export async function POST(req: NextRequest) {
       trackingNumber,
     };
 
-    const saved = await saveOrder(newOrder);
-    
-    // Send confirmation email (fire-and-forget, don't block order)
-    sendOrderConfirmationEmail(newOrder).catch((err) =>
-      console.error("Email send failed (non-blocking):", err)
-    );
-    
-    return NextResponse.json({ ...saved }, { status: 201 });
+    await saveOrder(newOrder);
+
+    // Return a plain response object (not spread) to guarantee valid JSON
+    const responseBody = {
+      id: newOrder.id,
+      status: newOrder.status,
+      trackingNumber: newOrder.trackingNumber,
+      totalAmount: newOrder.totalAmount,
+      createdAt: newOrder.createdAt,
+    };
+
+    // Send email in background without blocking (lazy import to avoid breaking if nodemailer issues)
+    try {
+      const { sendOrderConfirmationEmail } = await import("@/lib/email");
+      sendOrderConfirmationEmail(newOrder).catch(() => {});
+    } catch {
+      // Email module failed to load — don't crash the order
+    }
+
+    return NextResponse.json(responseBody, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);
     return NextResponse.json({ error: "Failed to place order" }, { status: 500 });
