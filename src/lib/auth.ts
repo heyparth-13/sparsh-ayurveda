@@ -15,25 +15,33 @@ export interface User {
 
 const isVercel = !!process.env.VERCEL;
 
+// In-memory user store for Vercel
+const memoryUsers: User[] = [];
+
 const getUsersFilePath = () => {
-  if (isVercel) {
-    return path.join("/tmp", "users.json");
-  }
   return path.join(process.cwd(), "src", "data", "users.json");
 };
 
 const ensureUsersFileExists = () => {
-  const filePath = getUsersFilePath();
-  const dirPath = path.dirname(filePath);
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, "[]", "utf-8");
+  try {
+    const filePath = getUsersFilePath();
+    const dirPath = path.dirname(filePath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, "[]", "utf-8");
+    }
+  } catch (err) {
+    console.error("ensureUsersFileExists failed:", err);
   }
 };
 
 export async function getUsers(): Promise<User[]> {
+  if (isVercel) {
+    return [...memoryUsers];
+  }
+
   const filePath = getUsersFilePath();
   ensureUsersFileExists();
   try {
@@ -51,11 +59,20 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
 }
 
 export async function saveUser(user: User): Promise<User> {
+  if (isVercel) {
+    memoryUsers.push(user);
+    return user;
+  }
+
   const filePath = getUsersFilePath();
   ensureUsersFileExists();
-  const users = await getUsers();
-  users.push(user);
-  await fs.promises.writeFile(filePath, JSON.stringify(users, null, 2), "utf-8");
+  try {
+    const users = await getUsers();
+    users.push(user);
+    await fs.promises.writeFile(filePath, JSON.stringify(users, null, 2), "utf-8");
+  } catch (err) {
+    console.error("saveUser file write failed:", err);
+  }
   return user;
 }
 

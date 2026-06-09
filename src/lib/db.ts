@@ -53,35 +53,60 @@ export interface Review {
   createdAt: string;
 }
 
+// ---------- Storage Strategy ----------
+// On Vercel (serverless), the filesystem is read-only except /tmp.
+// Even /tmp can be wiped between invocations and across instances.
+// We use an in-memory store as the PRIMARY store on Vercel,
+// and the local filesystem for local development.
+
 const isVercel = !!process.env.VERCEL;
 
-const getFilePath = (fileName: string) => {
-  if (isVercel) {
-    // Vercel serverless has a read-only filesystem; /tmp is the only writable dir
-    return path.join("/tmp", fileName);
+// In-memory stores (used on Vercel as primary, locally as fallback)
+const memoryStore: {
+  orders: Order[];
+  products: Product[];
+  reviews: Review[];
+  initialized: boolean;
+} = {
+  orders: [],
+  products: [],
+  reviews: [],
+  initialized: false,
+};
+
+function initMemoryStore() {
+  if (!memoryStore.initialized) {
+    memoryStore.products = [...(productsData as Product[])];
+    memoryStore.initialized = true;
   }
+}
+
+// ---------- File helpers (local dev only) ----------
+const getFilePath = (fileName: string) => {
   return path.join(process.cwd(), "src", "data", fileName);
 };
 
-// Check if file exists, if not write empty array (or seed from bundled data)
 const ensureFileExists = (filePath: string, initialContent = "[]") => {
-  const dirPath = path.dirname(filePath);
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-  if (!fs.existsSync(filePath)) {
-    // On Vercel, seed products.json from the bundled static data
-    const fileName = path.basename(filePath);
-    if (fileName === "products.json" && isVercel) {
-      fs.writeFileSync(filePath, JSON.stringify(productsData, null, 2), "utf-8");
-    } else {
+  try {
+    const dirPath = path.dirname(filePath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    if (!fs.existsSync(filePath)) {
       fs.writeFileSync(filePath, initialContent, "utf-8");
     }
+  } catch (err) {
+    console.error("ensureFileExists failed:", err);
   }
 };
 
-// Order Database Operations
+// ---------- Order Database Operations ----------
 export async function getOrders(): Promise<Order[]> {
+  if (isVercel) {
+    initMemoryStore();
+    return [...memoryStore.orders];
+  }
+
   const filePath = getFilePath("orders.json");
   ensureFileExists(filePath);
   try {
@@ -94,15 +119,33 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 export async function saveOrder(order: Order): Promise<Order> {
+  if (isVercel) {
+    initMemoryStore();
+    memoryStore.orders.push(order);
+    return order;
+  }
+
   const filePath = getFilePath("orders.json");
   ensureFileExists(filePath);
-  const orders = await getOrders();
-  orders.push(order);
-  await fs.promises.writeFile(filePath, JSON.stringify(orders, null, 2), "utf-8");
+  try {
+    const orders = await getOrders();
+    orders.push(order);
+    await fs.promises.writeFile(filePath, JSON.stringify(orders, null, 2), "utf-8");
+  } catch (err) {
+    console.error("saveOrder file write failed, order still valid:", err);
+  }
   return order;
 }
 
 export async function updateOrderStatus(orderId: string, status: "Pending" | "Shipped" | "Delivered"): Promise<Order | null> {
+  if (isVercel) {
+    initMemoryStore();
+    const order = memoryStore.orders.find((o) => o.id === orderId);
+    if (!order) return null;
+    order.status = status;
+    return order;
+  }
+
   const filePath = getFilePath("orders.json");
   ensureFileExists(filePath);
   const orders = await getOrders();
@@ -113,8 +156,13 @@ export async function updateOrderStatus(orderId: string, status: "Pending" | "Sh
   return orders[index];
 }
 
-// Product Database Operations
+// ---------- Product Database Operations ----------
 export async function getProducts(): Promise<Product[]> {
+  if (isVercel) {
+    initMemoryStore();
+    return [...memoryStore.products];
+  }
+
   const filePath = getFilePath("products.json");
   ensureFileExists(filePath);
   try {
@@ -133,6 +181,14 @@ export async function getProductById(id: string): Promise<Product | undefined> {
 }
 
 export async function updateProduct(id: string, updates: Partial<Product>): Promise<Product | null> {
+  if (isVercel) {
+    initMemoryStore();
+    const index = memoryStore.products.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+    memoryStore.products[index] = { ...memoryStore.products[index], ...updates };
+    return memoryStore.products[index];
+  }
+
   const filePath = getFilePath("products.json");
   ensureFileExists(filePath);
   const products = await getProducts();
@@ -144,8 +200,13 @@ export async function updateProduct(id: string, updates: Partial<Product>): Prom
   return products[index];
 }
 
-// Reviews Database Operations
+// ---------- Reviews Database Operations ----------
 export async function getReviews(): Promise<Review[]> {
+  if (isVercel) {
+    initMemoryStore();
+    return [...memoryStore.reviews];
+  }
+
   const filePath = getFilePath("reviews.json");
   ensureFileExists(filePath);
   try {
@@ -158,11 +219,21 @@ export async function getReviews(): Promise<Review[]> {
 }
 
 export async function saveReview(review: Review): Promise<Review> {
+  if (isVercel) {
+    initMemoryStore();
+    memoryStore.reviews.push(review);
+    return review;
+  }
+
   const filePath = getFilePath("reviews.json");
   ensureFileExists(filePath);
-  const reviews = await getReviews();
-  reviews.push(review);
-  await fs.promises.writeFile(filePath, JSON.stringify(reviews, null, 2), "utf-8");
+  try {
+    const reviews = await getReviews();
+    reviews.push(review);
+    await fs.promises.writeFile(filePath, JSON.stringify(reviews, null, 2), "utf-8");
+  } catch (err) {
+    console.error("saveReview file write failed:", err);
+  }
   return review;
 }
 
