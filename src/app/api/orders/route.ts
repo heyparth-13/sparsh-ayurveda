@@ -52,12 +52,12 @@ export async function POST(req: NextRequest) {
       createdAt: newOrder.createdAt,
     };
 
-    // Send email in background without blocking (lazy import to avoid breaking if nodemailer issues)
+    // Send WhatsApp in background
     try {
-      const { sendOrderConfirmationEmail } = await import("@/lib/email");
-      sendOrderConfirmationEmail(newOrder).catch(() => {});
+      const { sendOrderConfirmationWhatsApp } = await import("@/lib/whatsapp");
+      sendOrderConfirmationWhatsApp(newOrder).catch(() => {});
     } catch {
-      // Email module failed to load — don't crash the order
+      // WhatsApp module failed to load
     }
 
     return NextResponse.json(responseBody, { status: 201 });
