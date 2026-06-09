@@ -79,8 +79,7 @@ export default function CheckoutPage() {
     
     setTimeout(() => {
       clearCart();
-      const orderId = placedOrder?.id || "success";
-      router.push(`/order-success/${orderId}`);
+      router.push("/");
     }, 1500);
   };
 
