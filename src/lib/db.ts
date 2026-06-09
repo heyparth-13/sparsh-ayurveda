@@ -53,18 +53,30 @@ export interface Review {
   createdAt: string;
 }
 
+const isVercel = !!process.env.VERCEL;
+
 const getFilePath = (fileName: string) => {
+  if (isVercel) {
+    // Vercel serverless has a read-only filesystem; /tmp is the only writable dir
+    return path.join("/tmp", fileName);
+  }
   return path.join(process.cwd(), "src", "data", fileName);
 };
 
-// Check if file exists, if not write empty array
+// Check if file exists, if not write empty array (or seed from bundled data)
 const ensureFileExists = (filePath: string, initialContent = "[]") => {
   const dirPath = path.dirname(filePath);
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
   if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, initialContent, "utf-8");
+    // On Vercel, seed products.json from the bundled static data
+    const fileName = path.basename(filePath);
+    if (fileName === "products.json" && isVercel) {
+      fs.writeFileSync(filePath, JSON.stringify(productsData, null, 2), "utf-8");
+    } else {
+      fs.writeFileSync(filePath, initialContent, "utf-8");
+    }
   }
 };
 

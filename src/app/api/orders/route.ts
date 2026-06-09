@@ -40,10 +40,12 @@ export async function POST(req: NextRequest) {
 
     const saved = await saveOrder(newOrder);
     
-    // Send confirmation email
-    const emailPreviewUrl = await sendOrderConfirmationEmail(newOrder);
+    // Send confirmation email (fire-and-forget, don't block order)
+    sendOrderConfirmationEmail(newOrder).catch((err) =>
+      console.error("Email send failed (non-blocking):", err)
+    );
     
-    return NextResponse.json({ ...saved, emailPreviewUrl }, { status: 201 });
+    return NextResponse.json({ ...saved }, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);
     return NextResponse.json({ error: "Failed to place order" }, { status: 500 });

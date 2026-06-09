@@ -13,7 +13,12 @@ export interface User {
   createdAt: string;
 }
 
+const isVercel = !!process.env.VERCEL;
+
 const getUsersFilePath = () => {
+  if (isVercel) {
+    return path.join("/tmp", "users.json");
+  }
   return path.join(process.cwd(), "src", "data", "users.json");
 };
 
