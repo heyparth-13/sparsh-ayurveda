@@ -79,10 +79,7 @@ export default function CheckoutPage() {
     
     setTimeout(() => {
       clearCart();
-      const orderId = placedOrder?.id || "success";
-      const message = `Hi Sparsh Ayurveda! 🌿\n\nI just placed a new order on your website.\n\n*Order ID:* ${orderId}\n*Total Bill:* ₹${grandTotal}\n\nPlease confirm my order!`;
-      const whatsappUrl = `https://wa.me/919054727259?text=${encodeURIComponent(message)}`;
-      window.location.href = whatsappUrl;
+      router.push("/");
     }, 1500);
   };
 

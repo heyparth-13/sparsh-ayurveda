@@ -13,6 +13,8 @@ export interface Product {
   image: string;
   rating: number;
   reviewsCount: number;
+  stock: number;         // New field (default: 20)
+  enabled: boolean;      // New field (default: true)
 }
 
 export interface OrderItem {
@@ -38,12 +40,12 @@ export interface Order {
   items: OrderItem[];
   totalAmount: number;
   paymentMethod: string;
-  status: "Pending" | "Shipped" | "Delivered";
+  status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: string;
+  confirmedAt?: string;  // New field
   trackingNumber: string;
 }
 
-// Custom simple review interface
 export interface Review {
   id: string;
   productId: string;
@@ -54,14 +56,8 @@ export interface Review {
 }
 
 // ---------- Storage Strategy ----------
-// On Vercel (serverless), the filesystem is read-only except /tmp.
-// Even /tmp can be wiped between invocations and across instances.
-// We use an in-memory store as the PRIMARY store on Vercel,
-// and the local filesystem for local development.
-
 const isVercel = !!process.env.VERCEL;
 
-// In-memory stores (used on Vercel as primary, locally as fallback)
 const memoryStore: {
   orders: Order[];
   products: Product[];
@@ -76,7 +72,11 @@ const memoryStore: {
 
 function initMemoryStore() {
   if (!memoryStore.initialized) {
-    memoryStore.products = [...(productsData as Product[])];
+    memoryStore.products = (productsData as any[]).map(p => ({
+      ...p,
+      stock: typeof p.stock === "number" ? p.stock : 20,
+      enabled: typeof p.enabled === "boolean" ? p.enabled : true,
+    }));
     memoryStore.initialized = true;
   }
 }
@@ -137,12 +137,19 @@ export async function saveOrder(order: Order): Promise<Order> {
   return order;
 }
 
-export async function updateOrderStatus(orderId: string, status: "Pending" | "Shipped" | "Delivered"): Promise<Order | null> {
+export async function updateOrderStatus(
+  orderId: string,
+  status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled",
+  confirmedAt?: string
+): Promise<Order | null> {
   if (isVercel) {
     initMemoryStore();
     const order = memoryStore.orders.find((o) => o.id === orderId);
     if (!order) return null;
     order.status = status;
+    if (confirmedAt) {
+      order.confirmedAt = confirmedAt;
+    }
     return order;
   }
 
@@ -151,7 +158,11 @@ export async function updateOrderStatus(orderId: string, status: "Pending" | "Sh
   const orders = await getOrders();
   const index = orders.findIndex((o) => o.id === orderId);
   if (index === -1) return null;
+  
   orders[index].status = status;
+  if (confirmedAt) {
+    orders[index].confirmedAt = confirmedAt;
+  }
   await fs.promises.writeFile(filePath, JSON.stringify(orders, null, 2), "utf-8");
   return orders[index];
 }
@@ -167,17 +178,40 @@ export async function getProducts(): Promise<Product[]> {
   ensureFileExists(filePath);
   try {
     const data = await fs.promises.readFile(filePath, "utf-8");
-    return JSON.parse(data) as Product[];
+    const parsed = JSON.parse(data) as any[];
+    return parsed.map(p => ({
+      ...p,
+      stock: typeof p.stock === "number" ? p.stock : 20,
+      enabled: typeof p.enabled === "boolean" ? p.enabled : true,
+    }));
   } catch (error) {
     console.error("Error reading products:", error);
-    // Fallback to static data if file doesn't exist or is empty/corrupt
-    return productsData as Product[];
+    return (productsData as any[]).map(p => ({
+      ...p,
+      stock: typeof p.stock === "number" ? p.stock : 20,
+      enabled: typeof p.enabled === "boolean" ? p.enabled : true,
+    }));
   }
 }
 
 export async function getProductById(id: string): Promise<Product | undefined> {
   const products = await getProducts();
   return products.find((p) => p.id === id);
+}
+
+export async function saveProduct(product: Product): Promise<Product> {
+  if (isVercel) {
+    initMemoryStore();
+    memoryStore.products.push(product);
+    return product;
+  }
+
+  const filePath = getFilePath("products.json");
+  ensureFileExists(filePath);
+  const products = await getProducts();
+  products.push(product);
+  await fs.promises.writeFile(filePath, JSON.stringify(products, null, 2), "utf-8");
+  return product;
 }
 
 export async function updateProduct(id: string, updates: Partial<Product>): Promise<Product | null> {
@@ -198,6 +232,26 @@ export async function updateProduct(id: string, updates: Partial<Product>): Prom
   products[index] = { ...products[index], ...updates };
   await fs.promises.writeFile(filePath, JSON.stringify(products, null, 2), "utf-8");
   return products[index];
+}
+
+export async function deleteProduct(id: string): Promise<boolean> {
+  if (isVercel) {
+    initMemoryStore();
+    const index = memoryStore.products.findIndex((p) => p.id === id);
+    if (index === -1) return false;
+    memoryStore.products.splice(index, 1);
+    return true;
+  }
+
+  const filePath = getFilePath("products.json");
+  ensureFileExists(filePath);
+  const products = await getProducts();
+  const index = products.findIndex((p) => p.id === id);
+  if (index === -1) return false;
+
+  products.splice(index, 1);
+  await fs.promises.writeFile(filePath, JSON.stringify(products, null, 2), "utf-8");
+  return true;
 }
 
 // ---------- Reviews Database Operations ----------

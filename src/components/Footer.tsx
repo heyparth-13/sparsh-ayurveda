@@ -68,7 +68,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Sparsh Veda (Sparsh Veda Care). All rights reserved.
           </p>
           <Link href="/admin" prefetch={false} className={styles.adminSecretBtn} aria-label="Admin Access">
-            Admin Panel 🔒
+            Admin Login 🔒
           </Link>
         </div>
       </div>
