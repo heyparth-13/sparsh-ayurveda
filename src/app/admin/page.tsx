@@ -130,10 +130,12 @@ export default function AdminPage() {
   // Update Status handler
   const handleStatusChange = async (orderId: string, newStatus: Order["status"]) => {
     try {
+      // Send full order data for Vercel cold-start re-hydration
+      const orderData = orders.find(o => o.id === orderId);
       const res = await fetch(`/api/orders/${orderId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ status: newStatus, order: orderData }),
       });
 
       if (res.ok) {
@@ -156,8 +158,12 @@ export default function AdminPage() {
   // Confirm Order system
   const handleConfirmOrder = async (orderId: string) => {
     try {
+      // Send full order data so the serverless function can use it even on cold starts
+      const orderToConfirm = orders.find(o => o.id === orderId);
       const res = await fetch(`/api/orders/${orderId}/confirm`, {
-        method: "POST"
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderToConfirm || { id: orderId })
       });
       const data = await res.json();
       if (res.ok && data.success) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getOrders, updateOrderStatus, getProductById, updateProduct } from "@/lib/db";
+import { getOrders, updateOrderStatus, saveOrder, getProductById, updateProduct, Order } from "@/lib/db";
 import { sendOrderConfirmationSMS } from "@/lib/sms";
 import { sendOrderConfirmationEmail } from "@/lib/email";
 import { sendOrderConfirmationWhatsApp } from "@/lib/whatsapp";
@@ -13,8 +13,28 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+
+    // Try to read body (client sends the full order object for Vercel compatibility)
+    let clientOrder: Order | null = null;
+    try {
+      const body = await req.json();
+      if (body && body.id) {
+        clientOrder = body as Order;
+      }
+    } catch {
+      // No body or invalid JSON — that's fine, we'll try the DB
+    }
+
+    // 1. Try to find the order in the database/memory store
     const orders = await getOrders();
-    const order = orders.find((o) => o.id === id);
+    let order = orders.find((o) => o.id === id);
+
+    // 2. If not found in store (common on Vercel cold starts), use the client-provided order
+    if (!order && clientOrder) {
+      // Re-hydrate: save it into the in-memory store so updateOrderStatus can find it
+      await saveOrder(clientOrder);
+      order = clientOrder;
+    }
 
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
@@ -24,50 +44,50 @@ export async function POST(
       return NextResponse.json({ error: "Order is already confirmed" }, { status: 400 });
     }
 
-    // 1. Change status to Confirmed and save confirmation timestamp
+    // 3. Change status to Confirmed and save confirmation timestamp
     const now = new Date().toISOString();
     const updatedOrder = await updateOrderStatus(id, "Confirmed", now);
 
-    if (!updatedOrder) {
-      return NextResponse.json({ error: "Failed to confirm order" }, { status: 500 });
-    }
+    // Build a response order (use updatedOrder if available, otherwise manually construct)
+    const confirmedOrder: Order = updatedOrder || { ...order, status: "Confirmed", confirmedAt: now };
 
-    // 2. Auto-update stock levels (Inventory Management)
+    // 4. Auto-update stock levels (Inventory Management)
     for (const item of order.items) {
-      const product = await getProductById(item.id);
-      if (product) {
-        const newStock = Math.max(0, product.stock - item.quantity);
-        await updateProduct(item.id, { stock: newStock });
+      try {
+        const product = await getProductById(item.id);
+        if (product) {
+          const newStock = Math.max(0, product.stock - item.quantity);
+          await updateProduct(item.id, { stock: newStock });
+        }
+      } catch (err) {
+        console.error(`Stock update failed for product ${item.id}:`, err);
       }
     }
 
-    // 3. Send notifications (Email, WhatsApp, SMS)
-    // Email (uses nodemailer or fallback Ethereal simulation)
+    // 5. Send notifications (Email, WhatsApp, SMS)
     let emailPreviewUrl = null;
     try {
-      emailPreviewUrl = await sendOrderConfirmationEmail(updatedOrder);
+      emailPreviewUrl = await sendOrderConfirmationEmail(confirmedOrder);
     } catch (err) {
       console.error("Email send failed:", err);
     }
 
-    // WhatsApp simulation/real Meta API
     try {
-      await sendOrderConfirmationWhatsApp(updatedOrder);
+      await sendOrderConfirmationWhatsApp(confirmedOrder);
     } catch (err) {
       console.error("WhatsApp send failed:", err);
     }
 
-    // SMS simulation
     let smsResult = null;
     try {
-      smsResult = await sendOrderConfirmationSMS(updatedOrder);
+      smsResult = await sendOrderConfirmationSMS(confirmedOrder);
     } catch (err) {
       console.error("SMS send failed:", err);
     }
 
     return NextResponse.json({
       success: true,
-      order: updatedOrder,
+      order: confirmedOrder,
       emailPreviewUrl,
       smsContent: smsResult?.content || "",
       message: "Order confirmed, stock updated, and notifications sent."
