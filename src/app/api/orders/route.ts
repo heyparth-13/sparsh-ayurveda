@@ -60,7 +60,11 @@ export async function POST(req: NextRequest) {
       // WhatsApp module failed to load
     }
 
-    return NextResponse.json(responseBody, { status: 201 });
+    const response = NextResponse.json(responseBody, { status: 201 });
+    // Store order in cookie for Vercel stateless fallback
+    response.cookies.set("lastOrder", encodeURIComponent(JSON.stringify(newOrder)), { maxAge: 300, path: '/' });
+    
+    return response;
   } catch (error) {
     console.error("Error creating order:", error);
     return NextResponse.json({ error: "Failed to place order" }, { status: 500 });

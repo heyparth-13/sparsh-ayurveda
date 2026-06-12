@@ -106,12 +106,17 @@ export async function POST(req: NextRequest) {
       console.error("SMS confirmation failed:", err);
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       orderId: newOrder.id,
       paymentId: newOrder.paymentId,
       emailPreviewUrl,
     }, { status: 201 });
+
+    // Store order in cookie for Vercel stateless fallback
+    response.cookies.set("lastOrder", encodeURIComponent(JSON.stringify(newOrder)), { maxAge: 300, path: '/' });
+    
+    return response;
 
   } catch (error) {
     console.error("Error verifying payment and creating order:", error);

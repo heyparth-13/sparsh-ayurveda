@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -22,20 +23,37 @@ export default async function OrderSuccessPage({ params, searchParams }: PagePro
   let order = orders.find((o) => o.id === id);
 
   if (!order) {
-    if (process.env.VERCEL) {
-      order = {
-        id,
-        paymentId: resolvedSearchParams.paymentId || "Processing...",
-        status: "Confirmed",
-        totalAmount: Number(resolvedSearchParams.amt) || 0,
-        items: [],
-        customer: { name: "Valued Customer", email: "", phone: "", address: "", city: "", zipCode: "" },
-        createdAt: new Date().toISOString(),
-        trackingNumber: `SPARK-${Math.floor(100000 + Math.random() * 900000)}`,
-        paymentMethod: "Prepaid",
-      };
-    } else {
-      notFound();
+    const cookieStore = await cookies();
+    const lastOrderStr = cookieStore.get("lastOrder")?.value;
+    
+    if (lastOrderStr) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(lastOrderStr));
+        if (decoded.id === id) {
+          order = decoded;
+        }
+      } catch (err) {
+        console.error("Failed to parse lastOrder cookie", err);
+      }
+    }
+
+    // If still no order, fallback to mock or 404
+    if (!order) {
+      if (process.env.VERCEL) {
+        order = {
+          id,
+          paymentId: resolvedSearchParams.paymentId || "Processing...",
+          status: "Confirmed",
+          totalAmount: Number(resolvedSearchParams.amt) || 0,
+          items: [],
+          customer: { name: "Valued Customer", email: "", phone: "", address: "", city: "", zipCode: "" },
+          createdAt: new Date().toISOString(),
+          trackingNumber: `SPARK-${Math.floor(100000 + Math.random() * 900000)}`,
+          paymentMethod: "Prepaid",
+        };
+      } else {
+        notFound();
+      }
     }
   }
 
