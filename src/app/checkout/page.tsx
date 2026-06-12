@@ -166,7 +166,7 @@ export default function CheckoutPage() {
                   setTransactionStatus("success");
                   setTimeout(() => {
                     clearCart();
-                    router.push(`/order-success/${verifyData.orderId}?paymentId=${verifyData.paymentId}`);
+                    router.push(`/order-success/${verifyData.orderId}?paymentId=${verifyData.paymentId}&amt=${orderPayload.totalAmount}`);
                   }, 1500);
                 } else {
                   throw new Error(verifyData.error || "Verification failed");
@@ -232,7 +232,7 @@ export default function CheckoutPage() {
         setTransactionStatus("success");
         setTimeout(() => {
           clearCart();
-          router.push(`/order-success/${verifyData.orderId}?paymentId=${verifyData.paymentId}`);
+          router.push(`/order-success/${verifyData.orderId}?paymentId=${verifyData.paymentId}&amt=${demoOrderPayload.totalAmount}`);
         }, 1500);
       } else {
         throw new Error(verifyData.error || "Simulated verification failed.");
