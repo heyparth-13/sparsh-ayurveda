@@ -7,7 +7,7 @@ export async function sendOrderConfirmationSMS(order: Order) {
   const total = order.totalAmount;
   const phone = order.customer.phone;
 
-  const smsText = `Thank you for shopping with Sportsveda!
+  const smsText = `Thank you for shopping with Sparsh Ayurveda!
 
 Your order #${orderId} has been confirmed by our team.
 
@@ -16,7 +16,7 @@ Amount: ₹${total}
 
 We are preparing your order and will notify you when it is shipped.
 
-Team Sportsveda`;
+Team Sparsh Ayurveda`;
 
   console.log("================ SIMULATED SMS SENT ==================");
   console.log(`To phone: ${phone}`);

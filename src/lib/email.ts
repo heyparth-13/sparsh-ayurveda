@@ -96,3 +96,54 @@ export async function sendOrderConfirmationEmail(order: Order) {
     return null;
   }
 }
+
+export async function sendAdminNotificationEmail(order: Order) {
+  try {
+    const mailer = await getTransporter();
+    
+    const itemsList = order.items.map(item => 
+      `<li>${item.quantity}x ${item.name} - ₹${item.price * item.quantity}</li>`
+    ).join("");
+
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@sparshveda.com";
+
+    const mailOptions = {
+      from: process.env.SMTP_USER ? `"Sparsh Veda Alerts" <${process.env.SMTP_USER}>` : '"Sparsh Veda Alerts" <alerts@sparksayurveda.com>',
+      to: adminEmail,
+      subject: `🚨 Alert: New Order Received - ${order.id}`,
+      text: `A new order has been received. Order ID: ${order.id}. Customer Name: ${order.customer.name}. Amount: ₹${order.totalAmount}. Payment Method: ${order.paymentMethod}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 2px solid #2e4f39; padding: 20px; border-radius: 8px;">
+          <h2 style="color: #2e4f39; margin-top: 0;">🌿 Sparsh Veda Admin Alert</h2>
+          <p>A new order has been successfully paid and placed. Please prepare the items for dispatch.</p>
+          
+          <div style="background-color: #f4f7f5; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2e4f39;">
+            <p><strong>Order ID:</strong> ${order.id}</p>
+            <p><strong>Customer Name:</strong> ${order.customer.name}</p>
+            <p><strong>Customer Phone:</strong> ${order.customer.phone}</p>
+            <p><strong>Customer Email:</strong> ${order.customer.email}</p>
+            <p><strong>Shipping Address:</strong> ${order.customer.address}, ${order.customer.city} - ${order.customer.zipCode}</p>
+            <p><strong>Payment Method:</strong> ${order.paymentMethod.toUpperCase()}</p>
+            <p><strong>Payment ID:</strong> ${order.paymentId || "N/A"}</p>
+            <p><strong>Grand Total:</strong> ₹${order.totalAmount}</p>
+          </div>
+          
+          <h3>Items ordered:</h3>
+          <ul style="padding-left: 20px; line-height: 1.6;">
+            ${itemsList}
+          </ul>
+          
+          <p style="margin-top: 25px;"><a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin" style="background-color: #2e4f39; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Go to Admin Command Center ➔</a></p>
+        </div>
+      `,
+    };
+
+    const info = await mailer.sendMail(mailOptions);
+    console.log("Admin notification email sent: %s", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("Error sending admin notification email:", error);
+    return false;
+  }
+}
+

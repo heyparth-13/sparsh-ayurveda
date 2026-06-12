@@ -104,7 +104,13 @@ export default async function OrderSuccessPage({ params }: PageProps) {
                 <h3 className={styles.cardTitle}>🧾 Invoice details</h3>
                 <div className={styles.orderMetadata}>
                   <div>Order ID: <strong>{order.id}</strong></div>
-                  <div>Payment Method: <strong>{order.paymentMethod === "cod" ? "Cash on Delivery" : "Credit/Debit Card (Simulated)"}</strong></div>
+                  <div>Payment Method: <strong>{order.paymentMethod === "cod" ? "Cash on Delivery" : order.paymentMethod.toUpperCase()}</strong></div>
+                  {order.paymentId && (
+                    <div>Payment ID: <strong>{order.paymentId}</strong></div>
+                  )}
+                  {order.razorpayOrderId && (
+                    <div>Gateway Ref: <strong>{order.razorpayOrderId}</strong></div>
+                  )}
                   <div>Status: <span className={styles.statusBadge}>{order.status}</span></div>
                 </div>
 

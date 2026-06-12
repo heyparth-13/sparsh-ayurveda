@@ -1054,6 +1054,8 @@ export default function AdminPage() {
                   {selectedOrder.confirmedAt && <p>Confirmed: {formatDate(selectedOrder.confirmedAt)}</p>}
                   <p>Tracking Ref: {selectedOrder.trackingNumber}</p>
                   <p>Payment: {selectedOrder.paymentMethod.toUpperCase()}</p>
+                  {selectedOrder.paymentId && <p>Payment ID: {selectedOrder.paymentId}</p>}
+                  {selectedOrder.razorpayOrderId && <p>Razorpay ID: {selectedOrder.razorpayOrderId}</p>}
                 </div>
               </div>
 

@@ -33,7 +33,9 @@
     ],
     "image": "/images/products/keshamrit-hair-oil.jpg",
     "rating": 4.9,
-    "reviewsCount": 42
+    "reviewsCount": 42,
+    "stock": 18,
+    "enabled": true
   },
   {
     "id": "keshpallav-hair-cleanser",
@@ -64,7 +66,9 @@
     ],
     "image": "/images/products/keshpallav-hair-cleanser.jpg",
     "rating": 4.8,
-    "reviewsCount": 38
+    "reviewsCount": 38,
+    "stock": 20,
+    "enabled": true
   },
   {
     "id": "ubtan-face-wash",
@@ -87,7 +91,9 @@
     ],
     "image": "/images/products/ubtan-face-wash.jpg",
     "rating": 4.7,
-    "reviewsCount": 56
+    "reviewsCount": 56,
+    "stock": 16,
+    "enabled": true
   },
   {
     "id": "palash-kesuda-soap",
@@ -111,7 +117,9 @@
     ],
     "image": "/images/products/palash-soap.jpg",
     "rating": 4.8,
-    "reviewsCount": 29
+    "reviewsCount": 29,
+    "stock": 20,
+    "enabled": true
   },
   {
     "id": "neem-soap",
@@ -136,7 +144,9 @@
     ],
     "image": "/images/products/neem-soap.jpg",
     "rating": 4.9,
-    "reviewsCount": 34
+    "reviewsCount": 34,
+    "stock": 20,
+    "enabled": true
   },
   {
     "id": "goat-milk-soap",
@@ -161,7 +171,9 @@
     ],
     "image": "/images/products/goat-milk-soap.jpg",
     "rating": 4.8,
-    "reviewsCount": 23
+    "reviewsCount": 23,
+    "stock": 20,
+    "enabled": true
   },
   {
     "id": "charcoal-soap",
@@ -186,7 +198,9 @@
     ],
     "image": "/images/products/charcoal-soap.jpg",
     "rating": 4.7,
-    "reviewsCount": 45
+    "reviewsCount": 45,
+    "stock": 20,
+    "enabled": true
   },
   {
     "id": "shea-butter-soap",
@@ -211,6 +225,8 @@
     ],
     "image": "/images/products/shea-butter-soap.jpg",
     "rating": 4.9,
-    "reviewsCount": 31
+    "reviewsCount": 31,
+    "stock": 20,
+    "enabled": true
   }
 ]

@@ -44,6 +44,9 @@ export interface Order {
   createdAt: string;
   confirmedAt?: string;  // New field
   trackingNumber: string;
+  paymentId?: string;       // Razorpay payment ID (or demo payment ID)
+  razorpayOrderId?: string; // Razorpay order ID (or demo order ID)
+  razorpaySignature?: string; // Razorpay payment signature
 }
 
 export interface Review {

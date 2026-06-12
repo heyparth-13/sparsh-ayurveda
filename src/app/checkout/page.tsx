@@ -32,6 +32,12 @@ export default function CheckoutPage() {
   const [transactionStatus, setTransactionStatus] = useState<"idle" | "processing" | "success">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Demo Modal states
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [demoOrderData, setDemoOrderData] = useState<any>(null);
+  const [demoOrderPayload, setDemoOrderPayload] = useState<any>(null);
+  const [demoSelectedMethod, setDemoSelectedMethod] = useState("card");
+
   // Prevent accessing checkout with an empty cart
   useEffect(() => {
     if (cartItems.length === 0 && transactionStatus === "idle") {
@@ -79,41 +85,38 @@ export default function CheckoutPage() {
     
     setTimeout(() => {
       clearCart();
-      router.push("/");
+      router.push(`/order-success/${placedOrder.id || ""}`);
     }, 1500);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTransactionStatus("processing");
     setErrorMsg("");
 
-    try {
-      // Simulate Razorpay/Bank processing delay for premium feel
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      const orderPayload = {
-        customer: {
-          name,
-          email,
-          phone,
-          address,
-          city,
-          zipCode,
-        },
-        items: cartItems.map((item) => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-          image: item.image,
-        })),
-        totalAmount: grandTotal,
-        paymentMethod,
-      };
+    const orderPayload = {
+      customer: {
+        name,
+        email,
+        phone,
+        address,
+        city,
+        zipCode,
+      },
+      items: cartItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      })),
+      totalAmount: grandTotal,
+      paymentMethod,
+    };
 
-      if (paymentMethod === "card" || paymentMethod === "upi") {
+    if (paymentMethod === "card" || paymentMethod === "upi") {
+      setTransactionStatus("processing");
+      try {
         const rzpRes = await fetch("/api/razorpay", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -123,61 +126,126 @@ export default function CheckoutPage() {
 
         if (orderData.error) throw new Error(orderData.error);
 
-        const options: any = {
-          key: "rzp_test_placeholder", // Replace with env variable in production
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: "Sparsh Veda",
-          description: "Ayurvedic Products Checkout",
-          order_id: orderData.id,
-          handler: async function (response: any) {
-            setTransactionStatus("processing");
-            try {
-              await placeOrder({ ...orderPayload, razorpayResponse: response });
-            } catch (err: any) {
-              setErrorMsg(err.message);
-              setTransactionStatus("idle");
-            }
-          },
-          prefill: { name, email, contact: phone },
-          theme: { color: "#2E4F39" }
-        };
-
-        if (paymentMethod === "upi") {
-          options.config = {
-            display: {
-              blocks: {
-                upi: {
-                  name: "Pay using UPI",
-                  instruments: [{ method: "upi" }]
-                }
-              },
-              sequence: ["block.upi"],
-              preferences: { show_default_blocks: false }
-            }
-          };
-        }
-
-        const rzp1 = new (window as any).Razorpay(options);
-        rzp1.on("payment.failed", function (response: any) {
-          setErrorMsg(response.error.description);
-        });
-        rzp1.open();
         setTransactionStatus("idle");
-        setIsSubmitting(false);
-      } else {
-        await placeOrder(orderPayload);
-      }
 
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setErrorMsg(err.message);
-      } else {
-        setErrorMsg("Failed to process payment.");
+        if (orderData.isDemo) {
+          // Open simulated modal for demo
+          setDemoOrderData(orderData);
+          setDemoOrderPayload(orderPayload);
+          setIsDemoModalOpen(true);
+          setIsSubmitting(false);
+        } else {
+          // Open real Razorpay Checkout using keys returned from backend
+          const options: any = {
+            key: orderData.key, // REAL key ID from backend env variables
+            amount: orderData.amount,
+            currency: orderData.currency,
+            name: "Sparsh Veda",
+            description: "Ayurvedic Products Checkout",
+            order_id: orderData.id,
+            handler: async function (response: any) {
+              setTransactionStatus("processing");
+              try {
+                // Call verification API
+                const verifyRes = await fetch("/api/razorpay/verify", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    customer: orderPayload.customer,
+                    items: orderPayload.items,
+                    totalAmount: orderPayload.totalAmount,
+                    paymentMethod: orderPayload.paymentMethod,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                    isDemoMode: false,
+                  }),
+                });
+                const verifyData = await verifyRes.json();
+                if (verifyRes.ok && verifyData.success) {
+                  setTransactionStatus("success");
+                  setTimeout(() => {
+                    clearCart();
+                    router.push(`/order-success/${verifyData.orderId}?paymentId=${verifyData.paymentId}`);
+                  }, 1500);
+                } else {
+                  throw new Error(verifyData.error || "Verification failed");
+                }
+              } catch (err: any) {
+                setErrorMsg(err.message);
+                setTransactionStatus("idle");
+              }
+            },
+            prefill: { name, email, contact: phone },
+            theme: { color: "#2E4F39" }
+          };
+
+          const rzp1 = new (window as any).Razorpay(options);
+          rzp1.on("payment.failed", function (response: any) {
+            router.push(`/payment-failed?error=${encodeURIComponent(response.error.description || "Razorpay Payment Failed")}`);
+          });
+          rzp1.open();
+          setIsSubmitting(false);
+        }
+      } catch (err: any) {
+        setErrorMsg(err.message || "Failed to connect to Razorpay.");
+        setIsSubmitting(false);
+        setTransactionStatus("idle");
       }
-      setIsSubmitting(false);
+    } else {
+      // Cash on Delivery
+      setTransactionStatus("processing");
+      try {
+        await placeOrder(orderPayload);
+      } catch (err: any) {
+        setErrorMsg(err.message || "Failed to place order.");
+        setIsSubmitting(false);
+        setTransactionStatus("idle");
+      }
+    }
+  };
+
+  const handleDemoPaymentSuccess = async () => {
+    setIsDemoModalOpen(false);
+    setTransactionStatus("processing");
+    try {
+      const demoPaymentId = `pay_demo_${Math.random().toString(36).substring(2, 11)}`;
+      const demoSignature = `sig_demo_${Math.random().toString(36).substring(2, 16)}`;
+
+      const verifyRes = await fetch("/api/razorpay/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: demoOrderPayload.customer,
+          items: demoOrderPayload.items,
+          totalAmount: demoOrderPayload.totalAmount,
+          paymentMethod: demoOrderPayload.paymentMethod,
+          razorpay_payment_id: demoPaymentId,
+          razorpay_order_id: demoOrderData.id,
+          razorpay_signature: demoSignature,
+          isDemoMode: true,
+        }),
+      });
+
+      const verifyData = await verifyRes.json();
+      if (verifyRes.ok && verifyData.success) {
+        setTransactionStatus("success");
+        setTimeout(() => {
+          clearCart();
+          router.push(`/order-success/${verifyData.orderId}?paymentId=${verifyData.paymentId}`);
+        }, 1500);
+      } else {
+        throw new Error(verifyData.error || "Simulated verification failed.");
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || "Demo payment simulation error.");
       setTransactionStatus("idle");
     }
+  };
+
+  const handleDemoPaymentFailure = () => {
+    setIsDemoModalOpen(false);
+    router.push("/payment-failed?error=Simulated+payment+failure+by+customer.");
   };
 
   if (cartItems.length === 0 && transactionStatus === "idle") {
@@ -188,6 +256,67 @@ export default function CheckoutPage() {
     <>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <Header />
+
+      {/* Simulated Razorpay Checkout Popup */}
+      <AnimatePresence>
+        {isDemoModalOpen && (
+          <div className={styles.demoOverlay}>
+            <div className={styles.demoContainer}>
+              <div className={styles.demoHeader}>
+                <span className={styles.demoHeaderLogo}>💳</span>
+                <h3 className={styles.demoHeaderTitle}>Razorpay Checkout</h3>
+                <p className={styles.demoHeaderDesc}>Sparsh Veda • Test Mode</p>
+                <div className={styles.demoHeaderAmount}>₹{grandTotal}</div>
+                <button onClick={() => setIsDemoModalOpen(false)} className={styles.demoCloseBtn}>✕</button>
+              </div>
+
+              <div className={styles.demoBody}>
+                <div className={styles.demoAlert}>
+                  <strong>Testing Mode Active</strong><br />
+                  No real funds will be processed. Select a payment simulation outcome below to continue testing.
+                </div>
+
+                <p className={styles.demoMethodTitle}>Test Payment Methods</p>
+                <div className={styles.demoMethodList}>
+                  <label className={styles.demoMethodItem}>
+                    <input
+                      type="radio"
+                      name="demopay"
+                      value="card"
+                      checked={demoSelectedMethod === "card"}
+                      onChange={() => setDemoSelectedMethod("card")}
+                    />
+                    <span>Credit / Debit Card (Simulated)</span>
+                  </label>
+                  <label className={styles.demoMethodItem}>
+                    <input
+                      type="radio"
+                      name="demopay"
+                      value="upi"
+                      checked={demoSelectedMethod === "upi"}
+                      onChange={() => setDemoSelectedMethod("upi")}
+                    />
+                    <span>UPI / QR Code (Simulated)</span>
+                  </label>
+                </div>
+
+                <div className={styles.demoActions}>
+                  <button onClick={handleDemoPaymentSuccess} className={styles.demoSuccessBtn}>
+                    Simulate Success ✅
+                  </button>
+                  <button onClick={handleDemoPaymentFailure} className={styles.demoFailBtn}>
+                    Simulate Failure ❌
+                  </button>
+                </div>
+              </div>
+
+              <div className={styles.demoFooter}>
+                <span>🔒 Secure payments by Razorpay</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
       
       <AnimatePresence>
         {transactionStatus !== "idle" && (
@@ -207,7 +336,7 @@ export default function CheckoutPage() {
                 <>
                   <div className={styles.spinner} />
                   <h2>Processing Payment...</h2>
-                  <p>Please do not close this window securely establishing connection.</p>
+                  <p>Please do not close this window while we securely establish connections.</p>
                 </>
               ) : (
                 <>
@@ -484,12 +613,14 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <button
+                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className={styles.placeOrderBtn}
                 >
-                  {isSubmitting ? "Placing Order..." : "Place Order 🔒"}
+                  {isSubmitting
+                    ? (paymentMethod === "cod" ? "Placing Order..." : "Processing...")
+                    : (paymentMethod === "cod" ? "Place Order 🔒" : "Pay Now 🔒")}
                 </button>
 
                 <p className={styles.safeNotice}>

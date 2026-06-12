@@ -17,9 +17,10 @@
     ],
     "totalAmount": 600,
     "paymentMethod": "UPI",
-    "status": "Pending",
+    "status": "Confirmed",
     "createdAt": "2026-06-03T07:23:35.471Z",
-    "trackingNumber": "SPARK-880857"
+    "trackingNumber": "SPARK-880857",
+    "confirmedAt": "2026-06-12T03:49:53.736Z"
   },
   {
     "id": "ORD-1781027550581-247",
@@ -42,8 +43,64 @@
     ],
     "totalAmount": 100,
     "paymentMethod": "cod",
-    "status": "Pending",
+    "status": "Confirmed",
     "createdAt": "2026-06-09T17:52:30.581Z",
-    "trackingNumber": "SPARK-835740"
+    "trackingNumber": "SPARK-835740",
+    "confirmedAt": "2026-06-12T03:49:52.773Z"
+  },
+  {
+    "id": "ORD-1781122210149-700",
+    "customer": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "9876543210",
+      "address": "123 Ayurvedic Road",
+      "city": "Gandhinagar",
+      "zipCode": "382010"
+    },
+    "items": [
+      {
+        "id": "ubtan-face-wash",
+        "name": "Ubtan Face Wash",
+        "price": 200,
+        "quantity": 1,
+        "image": "/images/products/ubtan-face-wash.jpg"
+      }
+    ],
+    "totalAmount": 280,
+    "paymentMethod": "cod",
+    "status": "Confirmed",
+    "createdAt": "2026-06-10T20:10:10.149Z",
+    "trackingNumber": "SPARK-140205",
+    "confirmedAt": "2026-06-12T03:49:50.135Z"
+  },
+  {
+    "id": "ORD-1781236114130-903",
+    "customer": {
+      "name": "ParthParth",
+      "email": "parth@example.com",
+      "phone": "9876543210",
+      "address": "Test Street",
+      "city": "Gandhinagar",
+      "zipCode": "382010"
+    },
+    "items": [
+      {
+        "id": "ubtan-face-wash",
+        "name": "Ubtan Face Wash",
+        "price": 200,
+        "quantity": 3,
+        "image": "/images/products/ubtan-face-wash.jpg"
+      }
+    ],
+    "totalAmount": 600,
+    "paymentMethod": "upi",
+    "status": "Confirmed",
+    "createdAt": "2026-06-12T03:48:34.131Z",
+    "confirmedAt": "2026-06-12T03:48:34.131Z",
+    "trackingNumber": "SPARK-714853",
+    "paymentId": "pay_demo_9t1cz6tmv",
+    "razorpayOrderId": "order_demo_1781236108887",
+    "razorpaySignature": "sig_demo_8g5k2v0vzsq"
   }
 ]
