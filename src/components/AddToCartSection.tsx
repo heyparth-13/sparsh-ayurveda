@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import styles from "./AddToCartSection.module.css";
+import { toast } from "sonner";
 
 interface AddToCartSectionProps {
   product: {
@@ -24,6 +25,7 @@ export default function AddToCartSection({ product }: AddToCartSectionProps) {
   const handleAdd = () => {
     addToCart(product, quantity);
     setAdded(true);
+    toast.success(`${quantity} ${product.name} added to cart`);
     setTimeout(() => setAdded(false), 2000);
   };
 

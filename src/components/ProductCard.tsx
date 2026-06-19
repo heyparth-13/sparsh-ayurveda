@@ -6,6 +6,7 @@ import { Product } from "@/lib/db";
 import { useCart } from "@/context/CartContext";
 import styles from "./ProductCard.module.css";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   product: Product;
@@ -28,6 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     );
 
     setAdded(true);
+    toast.success(`${product.name} added to cart`);
     setTimeout(() => setAdded(false), 1500);
   };
 

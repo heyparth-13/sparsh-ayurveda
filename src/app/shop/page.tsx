@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import productsData from "@/data/products.json";
 import { Product } from "@/lib/db";
 import styles from "./page.module.css";
 
@@ -16,12 +15,29 @@ function ShopContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState("featured");
+  
+  const [productsData, setProductsData] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Sync category if URL search param changes
   useEffect(() => {
     const cat = searchParams.get("category") || "all";
     setSelectedCategory(cat);
   }, [searchParams]);
+
+  // Fetch products
+  useEffect(() => {
+    fetch("/api/products", { cache: "no-store" })
+      .then(res => res.json())
+      .then(data => {
+        setProductsData(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch products:", err);
+        setIsLoading(false);
+      });
+  }, []);
 
   const categories = [
     { id: "all", name: "All Products" },
@@ -32,7 +48,7 @@ function ShopContent() {
   ];
 
   // Filtering Logic
-  const filteredProducts = (productsData as Product[]).filter((product) => {
+  const filteredProducts = productsData.filter((product) => {
     // Category filter
     const matchesCategory =
       selectedCategory === "all" || product.category === selectedCategory;
@@ -138,7 +154,11 @@ function ShopContent() {
         </div>
 
         {/* Products Grid */}
-        {sortedProducts.length > 0 ? (
+        {isLoading ? (
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <p style={{ fontSize: "18px", color: "var(--primary-dark)" }}>Fetching products...</p>
+          </div>
+        ) : sortedProducts.length > 0 ? (
           <div className={styles.grid}>
             {sortedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />

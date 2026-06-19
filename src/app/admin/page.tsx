@@ -103,8 +103,8 @@ export default function AdminPage() {
     setIsLoading(true);
     try {
       const [ordersRes, productsRes] = await Promise.all([
-        fetch("/api/orders"),
-        fetch("/api/products")
+        fetch("/api/orders", { cache: "no-store" }),
+        fetch("/api/products", { cache: "no-store" })
       ]);
       if (ordersRes.ok) {
         const oData = await ordersRes.json();

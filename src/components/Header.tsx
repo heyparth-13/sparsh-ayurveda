@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./Header.module.css";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 
 export default function Header() {
   const pathname = usePathname();
@@ -59,7 +61,6 @@ export default function Header() {
 }
 
 // Client Component badge to read the cart state reactively
-import { useAuth } from "@/context/AuthContext";
 
 function AuthButtons() {
   const { user, logout, isLoading } = useAuth();
@@ -76,7 +77,6 @@ function AuthButtons() {
 }
 
 // Client Component badge to read the cart state reactively
-import { useCart } from "@/context/CartContext";
 
 function CartCountBadge() {
   const { cartCount } = useCart();

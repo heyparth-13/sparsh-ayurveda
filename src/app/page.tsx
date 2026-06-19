@@ -4,13 +4,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import DoshaQuiz from "@/components/DoshaQuiz";
-import productsData from "@/data/products.json";
-import { Product } from "@/lib/db";
+import { getProducts, Product } from "@/lib/db";
 import styles from "./page.module.css";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
   // Take the first 3 products as featured bestsellers
-  const featuredProducts = (productsData as Product[]).slice(0, 3);
+  const productsData = await getProducts();
+  const featuredProducts = productsData.slice(0, 3);
 
   return (
     <>

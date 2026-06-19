@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Outfit } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <CartProvider>{children}</CartProvider>
+          <Toaster richColors position="top-right" />
         </AuthProvider>
       </body>
     </html>
