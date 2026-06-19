@@ -135,13 +135,25 @@
 }
 
 @keyframes popIn {
-  0% { transform: scale(0); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
 }
 
 @media (max-width: 600px) {
@@ -150,22 +162,27 @@
     gap: 12px;
     justify-content: center;
   }
+
   .navLinks {
     gap: 8px;
     order: 3;
     width: 100%;
     justify-content: space-around;
   }
+
   .logo {
     order: 1;
     margin-right: auto;
   }
+
   .actions {
     order: 2;
   }
+
   .logoText {
     font-size: 20px;
   }
+
   .navLink {
     padding: 6px 12px;
     font-size: 13px;

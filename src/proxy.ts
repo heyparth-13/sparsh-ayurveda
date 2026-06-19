@@ -17,12 +17,26 @@ export function proxy(req: NextRequest) {
       }
     }
 
-    return new NextResponse('Authentication required', {
-      status: 401,
-      headers: {
-        'WWW-Authenticate': 'Basic realm="Secure Area"',
-      },
-    });
+    return new NextResponse(
+      `<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; url=/" />
+    <title>Authentication Required</title>
+  </head>
+  <body>
+    <script>window.location.href = "/";</script>
+    <p>Authentication required. Redirecting to home...</p>
+  </body>
+</html>`,
+      {
+        status: 401,
+        headers: {
+          'WWW-Authenticate': 'Basic realm="Secure Area"',
+          'Content-Type': 'text/html',
+        },
+      }
+    );
   }
 
   return NextResponse.next();

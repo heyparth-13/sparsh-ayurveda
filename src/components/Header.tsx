@@ -42,10 +42,16 @@ export default function Header() {
           ))}
         </nav>
         <div className={styles.actions} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <Link href="/cart" className={styles.cartBtn} aria-label="Shopping Cart">
-            <span className={styles.cartIcon}>🛒</span>
-            <CartCountBadge />
-          </Link>
+          {pathname.startsWith("/admin") ? (
+            <Link href="/" className={styles.backBtn} aria-label="Back to Website">
+              Back to Website
+            </Link>
+          ) : (
+            <Link href="/cart" className={styles.cartBtn} aria-label="Shopping Cart">
+              <span className={styles.cartIcon}>🛒</span>
+              <CartCountBadge />
+            </Link>
+          )}
         </div>
       </div>
     </header>
